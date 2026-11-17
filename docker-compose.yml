@@ -1,0 +1,39 @@
+
+services:
+  dvwa:
+    image: ghcr.io/digininja/dvwa:latest
+    container_name: dvwa
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8086:80"
+    environment:
+      DB_SERVER: db
+      DB_USER: dvwa
+      DB_PASSWORD: dvwa_password
+      DB_NAME: dvwa
+    networks:
+      - dvwa-network
+
+  db:
+    image: mariadb:10.11
+    container_name: dvwa-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: dvwa
+      MYSQL_USER: dvwa
+      MYSQL_PASSWORD: dvwa_password
+    volumes:
+      - dvwa-db-data:/var/lib/mysql
+    networks:
+      - dvwa-network
+
+volumes:
+  dvwa-db-data:
+
+networks:
+  dvwa-network:
+    driver: bridge
+
